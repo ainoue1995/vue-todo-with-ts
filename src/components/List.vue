@@ -26,8 +26,7 @@
 </template>
 <script lang="ts">
     import Vue from 'vue';
-    import Component from 'vue-class-component';
-    import {Prop, Watch} from 'vue-property-decorator';
+    import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
     import TodoItem from "@/dto/dto.todos";
 
     @Component({})
@@ -36,17 +35,19 @@
         todo: string = '';
         idForTodo: number = 1;
         newTodo: string = '';
-        todoList: TodoItem[];
+        todoList: TodoItem[] = [];
 
         constructor() {
             super();
             this.todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         }
 
+        @Emit()
         addTodo() {
             if (this.newTodo.trim().length === 0) {
                 return;
             }
+            this.checkNewTodo();
 
             this.todoList.push({
                 id: this.idForTodo,
@@ -56,7 +57,6 @@
             });
 
             this.newTodo = '';
-            this.idForTodo++;
             this.setTodos();
         }
 
@@ -70,10 +70,19 @@
             this.setTodos();
         }
 
-        @Watch('todoList', {deep: true})
-        onChange(newTodo: string, old: string) {
-            console.log('changed', old, '->', newTodo);
+        @Watch('newTodo', {immediate: true, deep: true})
+        public checkNewTodo() {
+            console.log(this.newTodo);
+            this.idForTodo = this.todoList.length + 1;
+            return
         }
+
+        @Watch('todoList', {immediate: true, deep: true})
+        public checkTodoList() {
+            console.log(this.todoList);
+            return
+        }
+
 
     }
 </script>
