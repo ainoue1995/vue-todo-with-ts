@@ -1,6 +1,5 @@
 <template>
     <div class="todo">
-        <!--        // LitComponentを呼び出し、addListを渡してる。-->
         <ListComponent/>
     </div>
 </template>

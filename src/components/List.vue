@@ -39,29 +39,32 @@
 
         constructor() {
             super();
+            // @todo 赤い波線あるので、要エラー解明
             this.todoList = JSON.parse(localStorage.getItem('todoList')) || [];
         }
 
-        @Emit()
         addTodo() {
             if (this.newTodo.trim().length === 0) {
                 return;
             }
             this.checkNewTodo();
 
-            this.todoList.push({
-                id: this.idForTodo,
-                title: this.newTodo,
-                completed: false,
-                editing: false,
-            });
-
+            if (this.todoList) {
+                this.todoList.push({
+                    id: this.idForTodo,
+                    title: this.newTodo,
+                    completed: false,
+                    editing: false,
+                });
+            }
             this.newTodo = '';
             this.setTodos();
         }
 
         deleteTodo(index: number) {
-            this.todoList.splice(index, 1);
+            if (this.todoList) {
+                this.todoList.splice(index, 1);
+            }
             this.setTodos();
         }
 
@@ -70,9 +73,11 @@
             this.setTodos();
         }
 
+        // @todo バインディングがうまく行っていないのか、add,deleteの結果がすぐに画面に反映されないので修正必要
         @Watch('newTodo', {immediate: true, deep: true})
         public checkNewTodo() {
             console.log(this.newTodo);
+            // @todo これだと要素数に対して次のIDが振られるため、IDが一意でないので、要修正
             this.idForTodo = this.todoList.length + 1;
             return
         }
