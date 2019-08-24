@@ -5,7 +5,7 @@
 </template>
 <script lang="ts">
     import {Component, Vue} from 'vue-property-decorator';
-    import ListComponent from "@/components/List.vue";
+    import ListComponent from '@/components/List.vue';
 
     @Component({
         components: {

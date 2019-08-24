@@ -5,8 +5,9 @@
         <div v-for="(todo, index) in todoList" :key="todoList.id" class="todo-item">
             <div class="todo-item-left">
                 <input type="checkbox" v-model="todo.completed" @change="checkTodo(todo)">
+                <!--                <input type="checkbox" v-model="todo.completed">-->
                 <div class="todo-item-label" v-if="!todo.editing"
-                     @dblclick="editTodo(todo)" :class="{ completed: todo.completed}">{{todo.title}}
+                     @dblclick="editTodo(todo)" v-bind:class="{ completed: todo.completed}">{{todo.title}}
                 </div>
                 <input type="text" v-else v-model="todo.title" class="todo-item-edit"
                        @blur="doneEdit(todo)" @keypress.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)">
@@ -17,75 +18,102 @@
         </div>
         <div class="extra-container">
             <div>
-                <label><input type="checkbox" :checked="!anyRemaining" @change="checkAllTodos"> Check All</label>
+                <label><input type="checkbox" v-bind:checked="!anyRemaining" @change="checkAllTodos"> Check All</label>
             </div>
             <div>{{remaining}} {{remaining | pluralize}} left</div>
 
         </div>
+        <pre>newTodo: {{newTodo}}</pre>
+        <pre>todoList: {{todoList}}</pre>
     </div>
 </template>
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Emit, Prop, Watch} from 'vue-property-decorator';
-    import TodoItem from "@/dto/dto.todos";
+    import TodoStorage from '@/components/TodoStorage';
+    import TodoItem from '@/dto/dto.todos';
+
+    const todoStorage = new TodoStorage();
 
     @Component({})
     export default class ListComponent extends Vue {
-        @Prop()
-        todo: string = '';
-        idForTodo: number = 1;
-        newTodo: string = '';
-        todoList: TodoItem[] = [];
+
+        // Propの意味がわかってないけど、とりあえずつけてみた。
+        @Prop() public newTodo!: string;
+        @Prop() public beforeEditCache!: string;
+        @Prop() public todoList!: TodoItem[];
 
         constructor() {
             super();
-            // @todo 赤い波線あるので、要エラー解明
-            this.todoList = JSON.parse(localStorage.getItem('todoList')) || [];
+            this.todoList = todoStorage.fetchAll();
+            // this.todoList.push({
+            //         id: 1,
+            //         title: 'やらなぁあかんこと',
+            //         completed: false,
+            //         editing: false,
+            //     },
+            //     {
+            //         id: 2,
+            //         title: 'めっちゃやらなぁあかんこと',
+            //         completed: false,
+            //         editing: false,
+            //     },
+            // );
         }
 
-        addTodo() {
+        public get remaining(): number {
+            return this.todoList.filter(todo => !todo.completed).length;
+        }
+
+        public get anyRemaining() {
+            return this.remaining !== 0;
+        }
+
+        public addTodo() {
             if (this.newTodo.trim().length === 0) {
                 return;
             }
-            this.checkNewTodo();
 
             if (this.todoList) {
                 this.todoList.push({
-                    id: this.idForTodo,
+                    id: todoStorage.nextId,
                     title: this.newTodo,
                     completed: false,
                     editing: false,
                 });
             }
             this.newTodo = '';
-            this.setTodos();
         }
 
-        deleteTodo(index: number) {
+        public editTodo(todo: TodoItem) {
+            todo.editing = true;
+            this.beforeEditCache = todo.title;
+        }
+
+        public doneEdit(todo: TodoItem) {
+            todo.editing = false;
+            if (todo.title.trim() === '') {
+                todo.title = this.beforeEditCache;
+            }
+        }
+
+        public deleteTodo(index: number) {
             if (this.todoList) {
                 this.todoList.splice(index, 1);
             }
-            this.setTodos();
         }
 
-        setTodos() {
-            localStorage.setItem("todoList", JSON.stringify(this.todoList));
-            this.setTodos();
-        }
+        // public checkTodo(todo: TodoItem[], completed: boolean) {
+        //     this.$emit('checkTodo', todo, completed);
+        // }
 
-        // @todo バインディングがうまく行っていないのか、add,deleteの結果がすぐに画面に反映されないので修正必要
-        @Watch('newTodo', {immediate: true, deep: true})
-        public checkNewTodo() {
-            console.log(this.newTodo);
-            // @todo これだと要素数に対して次のIDが振られるため、IDが一意でないので、要修正
-            this.idForTodo = this.todoList.length + 1;
-            return
-        }
+        // public checkAllTodos() {
+        //     this.todoList.forEach((todo) => todo.completed = );
+        // }
 
-        @Watch('todoList', {immediate: true, deep: true})
-        public checkTodoList() {
-            console.log(this.todoList);
-            return
+        @Watch('todoList', {deep: true})
+        private onTodoChanged(todoList: TodoItem[]) {
+            todoStorage.save(todoList);
         }
 
 
