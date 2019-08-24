@@ -16,13 +16,13 @@
                 &times;
             </div>
         </div>
-        <div class="extra-container">
-            <div>
-                <label><input type="checkbox" v-bind:checked="!anyRemaining" @change="checkAllTodos"> Check All</label>
-            </div>
-            <div>{{remaining}} {{remaining | pluralize}} left</div>
+<!--        <div class="extra-container">-->
+        <!--            <div>-->
+        <!--                <label><input type="checkbox" v-bind:checked="!anyRemaining" @change="checkAllTodos"> Check All</label>-->
+        <!--            </div>-->
+        <!--            <div>{{remaining}} {{remaining | pluralize}} left</div>-->
 
-        </div>
+        <!--        </div>-->
         <pre>newTodo: {{newTodo}}</pre>
         <pre>todoList: {{todoList}}</pre>
     </div>
@@ -61,13 +61,13 @@
             // );
         }
 
-        public get remaining(): number {
-            return this.todoList.filter(todo => !todo.completed).length;
-        }
-
-        public get anyRemaining() {
-            return this.remaining !== 0;
-        }
+        // public get remaining(): number {
+        //     return this.todoList.filter(todo => !todo.completed).length;
+        // }
+        //
+        // public get anyRemaining() {
+        //     return this.remaining !== 0;
+        // }
 
         public addTodo() {
             if (this.newTodo.trim().length === 0) {
