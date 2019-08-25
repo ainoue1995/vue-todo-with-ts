@@ -11,15 +11,14 @@ const STORAGE_KEY = 'vue-todo-with-ts';
 export default class TodoStorage {
     // newTodoのユニーク ID の採番用
     get nextId(): number {
-        // return this.fetchAll().length + 1;
-        let nextId: number;
-        if (!this.fetchAll()) {
-            nextId = 1;
-        } else {
-            nextId = this.fetchAll().slice(-1)[0].id + 1;
-        }
-        return nextId;
-        // return this.fetchAll().slice(-1)[0].id + 1;
+        return this.fetchAll().length + 1;
+        // let nextId: number;
+        // if (!this.fetchAll()) {
+        //     nextId = 1;
+        // } else {
+        //     nextId = this.fetchAll().slice(-1)[0].id + 1;
+        // }
+        // return nextId;
     }
 
     constructor(
