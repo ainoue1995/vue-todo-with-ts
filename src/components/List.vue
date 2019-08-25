@@ -41,7 +41,7 @@
         // Propの意味がわかってないけど、とりあえずつけてみた。
         @Prop() public newTodo!: string;
         @Prop() public beforeEditCache!: string;
-        @Prop() public todoList!: TodoItem[];
+        @Prop() public todoList: TodoItem[] = [];
 
         constructor() {
             super();
