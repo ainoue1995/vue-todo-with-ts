@@ -3,4 +3,4 @@ module.exports = {
         ? '/vue-todo-with-ts/'
         : '/',
     outputDir: 'docs',
-}
+};
