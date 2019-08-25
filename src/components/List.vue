@@ -16,7 +16,7 @@
                 &times;
             </div>
         </div>
-<!--        <div class="extra-container">-->
+        <!--        <div class="extra-container">-->
         <!--            <div>-->
         <!--                <label><input type="checkbox" v-bind:checked="!anyRemaining" @change="checkAllTodos"> Check All</label>-->
         <!--            </div>-->
@@ -46,19 +46,19 @@
         constructor() {
             super();
             this.todoList = todoStorage.fetchAll();
-            // this.todoList.push({
-            //         id: 1,
-            //         title: 'やらなぁあかんこと',
-            //         completed: false,
-            //         editing: false,
-            //     },
-            //     {
-            //         id: 2,
-            //         title: 'めっちゃやらなぁあかんこと',
-            //         completed: false,
-            //         editing: false,
-            //     },
-            // );
+            this.todoList.push({
+                    id: 1,
+                    title: 'やらなぁあかんこと',
+                    completed: false,
+                    editing: false,
+                },
+                {
+                    id: 2,
+                    title: 'めっちゃやらなぁあかんこと',
+                    completed: false,
+                    editing: false,
+                },
+            );
         }
 
         // public get remaining(): number {
